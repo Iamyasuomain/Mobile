@@ -38,12 +38,12 @@ class _UploadpicState extends State<Uploadpic> {
                 elevation: 0, //remove shadow naja
                 shape: CircleBorder(
                   side: BorderSide(
-                    color: Colors.grey[100]!, // from Figma
+                    color: Colors.grey[700]!, // from Figma
                     width: 2,
                   ),
                 ),
                 tooltip: 'Upload Image',
-                child: Icon(Icons.photo_size_select_actual_rounded,color: Colors.grey[100]),
+                child: Icon(Icons.photo_size_select_actual_rounded,color: Colors.grey[700]),
               ),
         );
   }
