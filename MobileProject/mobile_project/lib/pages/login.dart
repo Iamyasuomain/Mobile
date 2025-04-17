@@ -149,7 +149,7 @@ class _LoginState extends State<Login> {
                               .then((value) {
                             Navigator.pushReplacement(context,
                                 MaterialPageRoute(builder: (context) {
-                              return const Placeholder();
+                              return const MyApp();
                             }));
                           }).catchError((error) {
                             print(error);
