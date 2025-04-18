@@ -79,6 +79,7 @@ class _PageState extends State<Page> {
   @override
   Widget build(BuildContext context) {
 return Scaffold(
+  extendBody: true,
   bottomNavigationBar: ClipRRect(
     borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
     child: NavigationBarTheme(
