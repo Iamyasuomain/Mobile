@@ -48,7 +48,7 @@ class Display extends StatelessWidget {
         children: [
           Positioned.fill(child: content),
           Positioned(
-            top: 40,
+            top: 125,
             left: 20,
             child: FloatingActionButton(
               onPressed: () {
