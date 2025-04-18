@@ -6,6 +6,8 @@
 	<string>Give access to camera</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Give access to microphone</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Give access to photo</string>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>CFBundleDevelopmentRegion</key>
