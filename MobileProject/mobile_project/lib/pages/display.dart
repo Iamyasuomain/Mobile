@@ -1,3 +1,4 @@
+import 'dart:ffi';
 import 'package:flutter/material.dart';
 import 'dart:typed_data';
 import 'dart:io';
@@ -13,9 +14,7 @@ class Display extends StatelessWidget {
     this.capturedImagePath,
   });
 
-  // ===== Mock function for ML Processing =====
   Future<void> sendToML(Uint8List imageBytes) async {
-    // TODO: replace with actual ML call
     print("Sending image to ML model... size: ${imageBytes.length}");
   }
 
@@ -24,23 +23,56 @@ class Display extends StatelessWidget {
     Widget content;
 
     if (pickedImage != null) {
-      content = Image.memory(pickedImage!);
+      content = Image.memory(
+        pickedImage!,
+        fit: BoxFit.cover, // Makes the image full screen
+        width: double.infinity, // Make the width fill the screen
+        height: double.infinity, // Make the height fill the screen
+      );
     } else if (capturedImagePath != null) {
-      content = Image.file(File(capturedImagePath!));
+      content = Image.file(
+        File(capturedImagePath!),
+        fit: BoxFit.cover, // Makes the image full screen
+        width: double.infinity, // Make the width fill the screen
+        height: double.infinity, // Make the height fill the screen
+      );
     } else {
       content = const Text("No image available");
     }
 
     return Scaffold(
+      extendBodyBehindAppBar: true,
+      extendBody: true,
       appBar: AppBarCustom("Image"),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+      body: Stack(
         children: [
-          Expanded(child: Center(child: content)),
+          Positioned.fill(child: content),
+          Positioned(
+            top: 40,
+            left: 20,
+            child: FloatingActionButton(
+              onPressed: () {
+                Navigator.pop(context); // Pops the current screen
+              },
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              shape: CircleBorder(
+                side: BorderSide(color: Colors.grey[100]!, width: 2),
+              ),
+              tooltip: 'Back',
+              child: Icon(
+                Icons.arrow_back,
+                color: Colors.grey[100],
+              ),
+            ),
+          ),
+
+          // Send image button in the bottom-right corner
           if (pickedImage != null || capturedImagePath != null)
-            Padding(
-              padding: const EdgeInsets.only(bottom: 40.0),
-              child: ElevatedButton.icon(
+            Positioned(
+              bottom: 20,
+              right: 20,
+              child: FloatingActionButton(
                 onPressed: () async {
                   Uint8List? bytes;
 
@@ -57,20 +89,18 @@ class Display extends StatelessWidget {
                     );
                   }
                 },
-                icon: const Icon(Icons.send),
-                label: const Text("Send to ML Model"),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF2F5241),
-                  foregroundColor: Colors.white,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12)),
+                backgroundColor: Colors.transparent,
+                elevation: 0,
+                shape: CircleBorder(
+                  side: BorderSide(color: Colors.grey[100]!, width: 2),
                 ),
+                tooltip: 'Send image',
+                child: Icon(Icons.send_rounded, color: Colors.grey[100]),
               ),
-            )
+            ),
         ],
       ),
     );
   }
 }
+

@@ -27,12 +27,21 @@ class _UploadpicState extends State<Uploadpic> {
     _initCamera(camera);
   }
 
+  void changecamera() async {
+    camera == 0 ? camera = 1 : camera = 0;
+    await _cameraController?.dispose();
+    setState(() {
+      _isCameraReady = false;
+    });
+    _initCamera(camera);
+  }
+
   Future<void> _initCamera(camera) async {
     try {
       final cameras = await availableCameras();
       _cameraController = CameraController(
         cameras[camera],
-        ResolutionPreset.medium,
+        ResolutionPreset.high,
         imageFormatGroup: ImageFormatGroup.jpeg,
       );
       await _cameraController!.initialize();
@@ -106,7 +115,6 @@ class _UploadpicState extends State<Uploadpic> {
                 fit: StackFit.expand,
                 children: [
                   CameraPreview(_cameraController!),
-
                   Positioned(
                     bottom: 95,
                     left: MediaQuery.of(context).size.width / 2 - 30,
@@ -122,7 +130,22 @@ class _UploadpicState extends State<Uploadpic> {
                           color: Colors.grey[100]),
                     ),
                   ),
-
+                  Positioned(
+                    height: 40,
+                    width: 40,
+                    top: 125,
+                    left: MediaQuery.of(context).size.width / 2 - 30,
+                    child: FloatingActionButton(
+                      onPressed: changecamera,
+                      backgroundColor: Colors.transparent,
+                      elevation: 0,
+                      shape: CircleBorder(
+                        side: BorderSide(color: Colors.grey[100]!, width: 2),
+                      ),
+                      tooltip: 'Switch Camera',
+                      child: Icon(Icons.cameraswitch, color: Colors.grey[100]),
+                    ),
+                  ),
                   Positioned(
                     bottom: 95,
                     right: 30,
