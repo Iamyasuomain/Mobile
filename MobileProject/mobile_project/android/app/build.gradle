@@ -41,7 +41,14 @@ android {
         }
     }
 }
-
+dependencies {
+    implementation platform('com.google.firebase:firebase-bom:30.0.1') // Firebase BOM
+    implementation 'com.google.firebase:firebase-database'  // Firebase Database SDK
+    implementation 'com.google.firebase:firebase-auth'  // Firebase Auth (if you use authentication)
+    implementation 'com.google.firebase:firebase-analytics' // Firebase Analytics (if needed)
+}
 flutter {
     source = "../.."
 }
+apply plugin: 'com.google.gms.google-services'
+

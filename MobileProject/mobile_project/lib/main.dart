@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'pages/login.dart';
 import 'pages/register.dart';
 import 'pages/uploadpic.dart';
+import 'pages/stat.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -94,12 +95,12 @@ class _PageState extends State<Page> {
             ],
           );
         }
-        const pages = [
-          Login(),
-          Register(),
-          Uploadpic(),
-          Placeholder(), // Stat
-          Placeholder(), // Device
+        var pages = [
+          const Login(),
+          const Register(),
+          const Uploadpic(),
+          const Stat(), // Stat
+          const Placeholder(), // Device
         ];
 
         const navItems = [
