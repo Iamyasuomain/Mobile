@@ -8,7 +8,7 @@ import 'pages/login.dart';
 import 'pages/register.dart';
 import 'pages/uploadpic.dart';
 import 'pages/stat.dart';
-
+import 'pages/home.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
@@ -100,7 +100,7 @@ class _PageState extends State<Page> {
           const Register(),
           const Uploadpic(),
           const Stat(), // Stat
-          const Placeholder(), // Device
+           HomePage(), // Device
         ];
 
         const navItems = [
