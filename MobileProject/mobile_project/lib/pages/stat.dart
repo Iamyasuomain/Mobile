@@ -53,13 +53,13 @@ class _StatState extends State<Stat> {
         if (value < 10) return Colors.blueAccent; 
         if (value >= 10 && value < 25) return Colors.green;  
         if (value >= 25 && value < 35) return Colors.yellow; 
-        return Colors.red;  // Hot (Red)
+        return Colors.red;  
       } else if (type == "humidity") {
         if (value < 30) return Colors.lightBlue;
         if (value >= 30 && value < 60) return Colors.green;
         return Colors.red;
       }
-      return Colors.grey; // Default color
+      return Colors.grey; 
     }
 
     return Padding(

@@ -196,10 +196,10 @@ class _LoginState extends State<Login> {
                         elevation: 0,
                         backgroundColor: const Color(0xFFFFEEC2),
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 50, vertical: 12), // Adjust button size
+                            horizontal: 50, vertical: 12), 
                         shape: RoundedRectangleBorder(
                           borderRadius:
-                              BorderRadius.circular(23), // Rounded corners
+                              BorderRadius.circular(23), 
                         ),
                       ),
                       child: const Text(

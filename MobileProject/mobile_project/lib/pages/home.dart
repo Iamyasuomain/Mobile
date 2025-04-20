@@ -25,7 +25,6 @@ class _HomePageState extends State<HomePage> {
     _sensorStream = _sensorRef.onValue;
   }
 
-  // Simulate a device connection check
   void checkDeviceConnection() {
     if (lastUpdateTimestamp != null) {
       DateTime currentTime = DateTime.now();
@@ -53,7 +52,6 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Greeting Section
             Text(
               'Hello, ${userEmail ?? userEmail ?? 'User'}!',
               style: const TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
@@ -77,7 +75,6 @@ class _HomePageState extends State<HomePage> {
                       Map.from(snapshot.data!.snapshot.value as Map);
                   lastUpdateTimestamp = data['Timestamp'];
 
-                  // Check if the device is connected or not
                   WidgetsBinding.instance.addPostFrameCallback((_) {
                     checkDeviceConnection();
                   });
@@ -118,7 +115,7 @@ class _HomePageState extends State<HomePage> {
                   );
                 }
 
-                return const SizedBox(); // Empty return if no data is received
+                return const SizedBox(); 
               },
             ),
             const SizedBox(height: 32),

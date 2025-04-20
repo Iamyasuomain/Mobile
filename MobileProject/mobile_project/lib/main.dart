@@ -1,4 +1,4 @@
-// ignore_for_file: non_constant_identifier_names
+// ignore_for_file: non_constant_identifier_names, unnecessary_null_comparison
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:mobile_project/pages/setting.dart';
@@ -11,6 +11,7 @@ import 'pages/uploadpic.dart';
 import 'pages/stat.dart';
 import 'pages/home.dart';
 import '../services/Notiservices.dart';
+import 'package:mobile_project/pages/overall.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
@@ -101,10 +102,10 @@ class _PageState extends State<Page> {
           return const Login();
         }
         var pages = [
+          HomePage(),
           const Uploadpic(),
-          const Stat(), // Stat
-          HomePage(), // Device
-          SettingsScreen(),
+          const Stat(), 
+          Overall(),
           Placeholder(),
         ];
         pages = pages.where((page) => page != null).toList();
@@ -115,7 +116,7 @@ class _PageState extends State<Page> {
           NavigationDestination(
               icon: Icon(Icons.stacked_bar_chart), label: "Stat"),
           NavigationDestination(
-              icon: Icon(Icons.phonelink_setup_outlined), label: "Device"),
+              icon: Icon(Icons.summarize_outlined), label: "Overall"),
           NavigationDestination(
               icon: Icon(Icons.check_box_outlined), label: "Status"),
         ];
