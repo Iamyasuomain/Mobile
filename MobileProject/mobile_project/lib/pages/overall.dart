@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_project/main.dart';
-import 'package:firebase_database/firebase_database.dart'; 
+import 'package:firebase_database/firebase_database.dart';
 import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -14,32 +14,23 @@ class Overall extends StatefulWidget {
 
 class _OverallState extends State<Overall> {
   final DatabaseReference _tempRef =
-      FirebaseDatabase.instance.ref('ESP/Temperature'); 
+      FirebaseDatabase.instance.ref('ESP/Temperature');
   final DatabaseReference _humRef =
-      FirebaseDatabase.instance.ref('ESP/Humidity'); 
-  double _temperature = 0.0;
-  double _humidity = 0.0;
+      FirebaseDatabase.instance.ref('ESP/Humidity');
   String overallCondition = "";
   Color conditionColor = Colors.red;
   String latestalert = "";
+  double _temperature = 0;
+  double _humidity = 0;
   @override
   void initState() {
     super.initState();
     _tempRef.onValue.listen((DatabaseEvent event) {
       final data = event.snapshot.value;
-      overallCondition = _temperature < 18 || _humidity < 40
-          ? "แย่"
-          : _temperature > 30 || _humidity > 60
-              ? "ดี"
-              : "พอใช้";
-      conditionColor = overallCondition == "ดี"
-          ? Colors.green
-          : overallCondition == "พอใช้"
-              ? Colors.yellow
-              : Colors.red;
       if (data != null) {
         setState(() {
           _temperature = double.tryParse(data.toString()) ?? 0;
+          _updateCondition();
         });
       }
     });
@@ -49,28 +40,23 @@ class _OverallState extends State<Overall> {
       if (data != null) {
         setState(() {
           _humidity = double.tryParse(data.toString()) ?? 0;
+          _updateCondition();
         });
       }
     });
-    _fetchLatestAlertTimestamp();
   }
 
-  Future<void> _fetchLatestAlertTimestamp() async {
-    final user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
-      final alertRef =
-          FirebaseFirestore.instance.collection('alerts').doc(user.uid);
-      final alertDoc = await alertRef.get();
-      if (alertDoc.exists) {
-        final timestamp = alertDoc.data()?['timestamp'];
-        if (timestamp != null) {
-          setState(() {
-            latestalert =
-                DateFormat('yyyy-MM-dd HH:mm:ss').format(timestamp.toDate());
-          });
-        }
-      }
-    }
+  void _updateCondition() {
+    overallCondition = _temperature < 18 || _humidity < 40
+        ? "แย่"
+        : _temperature > 30 || _humidity > 60
+            ? "ดี"
+            : "พอใช้";
+    conditionColor = overallCondition == "ดี"
+        ? Colors.green
+        : overallCondition == "พอใช้"
+            ? Colors.yellow
+            : Colors.red;
   }
 
   @override
@@ -85,7 +71,6 @@ class _OverallState extends State<Overall> {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
-          
           children: [
             StatusCard(),
             const SizedBox(height: 50),
@@ -99,40 +84,62 @@ class _OverallState extends State<Overall> {
   }
 
   Widget LatestAlertTimestampCard() {
-    return Card(
-      elevation: 4,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Row(
-          children: [
-            const Icon(Icons.access_time, color: Colors.blueAccent),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'การแจ้งเตือนล่าสุด',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                    ),
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return SizedBox();
+
+    return StreamBuilder<DocumentSnapshot>(
+      stream: FirebaseFirestore.instance
+          .collection('alerts')
+          .doc(user.uid)
+          .snapshots(),
+      builder: (context, snapshot) {
+        String displayText = "ยังไม่มีการแจ้งเตือน";
+        if (snapshot.hasData && snapshot.data!.exists) {
+          final data = snapshot.data!.data() as Map<String, dynamic>;
+          final timestamp = data['timestamp'];
+          if (timestamp != null) {
+            displayText =
+                DateFormat('yyyy-MM-dd HH:mm:ss').format(timestamp.toDate());
+          }
+        }
+
+        return Card(
+          elevation: 4,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Row(
+              children: [
+                const Icon(Icons.access_time, color: Colors.blueAccent),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'การแจ้งเตือนล่าสุด',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        displayText,
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
                   ),
-                  const SizedBox(height: 4),
-                  Text(
-                    latestalert.isEmpty ? "ยังไม่มีการแจ้งเตือน" : latestalert,
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 
@@ -188,7 +195,6 @@ class _OverallState extends State<Overall> {
       ),
     );
   }
-
 
   Widget ValuesCard() {
     return Card(
@@ -285,7 +291,7 @@ class _OverallState extends State<Overall> {
 
   Widget bar(double value, double min, double max, Color color) {
     double percent = (value - min) / (max - min);
-    percent = percent.clamp(0.0, 1.0); 
+    percent = percent.clamp(0.0, 1.0);
 
     return Container(
       width: double.infinity,
