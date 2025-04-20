@@ -1,8 +1,8 @@
 import "package:flutter/material.dart";
 import "package:mobile_project/main.dart";
 
-class Archivement extends StatelessWidget {
-  const Archivement({super.key});
+class Archievement extends StatelessWidget {
+  const Archievement({super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -11,9 +11,11 @@ import 'package:flutter/material.dart';
 import 'pages/login.dart';
 import 'pages/register.dart';
 import 'pages/uploadpic.dart';
-import 'pages/stat.dart';
+import 'pages/status.dart';
 import 'pages/home.dart';
 import '../services/Notiservices.dart';
+import 'pages/stat.dart';
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
@@ -106,7 +108,7 @@ class _PageState extends State<Page> {
         var pages = [
           HomePage(),
           Uploadpic(), // Stat
-          Archivement(), // Device
+          Status(), // Device
           Stat(),
           SettingsScreen(),
         ];

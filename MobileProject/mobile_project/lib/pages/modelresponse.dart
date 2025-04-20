@@ -45,7 +45,7 @@ class _ModelresponsState extends State<Modelresponse> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Text("Predicted Value"),
+              const Text(""),
               const SizedBox(height: 10),
               Text(items.join(", ")), // Join items into a string for display
             ],
@@ -63,7 +63,7 @@ class _ModelresponsState extends State<Modelresponse> {
           child: const Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text("No predictions available"),
+              Text("The Model can't detect your food waste please try again"),
             ],
           ),
         ),
