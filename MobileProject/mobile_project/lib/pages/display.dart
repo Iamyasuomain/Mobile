@@ -7,6 +7,7 @@ import 'package:mobile_project/main.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:mobile_project/pages/modelresponse.dart';
+import 'package:flutter/cupertino.dart';
 
 class Display extends StatelessWidget {
   final String? uploadImagePath;
@@ -35,7 +36,7 @@ class Display extends StatelessWidget {
             child: const Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                CircularProgressIndicator(),
+                CupertinoActivityIndicator(),
                 SizedBox(height: 20),
                 Text(
                   "Processing...",
@@ -71,19 +72,20 @@ class Display extends StatelessWidget {
     final response = await http.post(url, headers: headers, body: body);
 
     if (response.statusCode == 200) {
-      Navigator.pop(context);
 
+      Navigator.pop(context);
+      
       final result = jsonDecode(response.body);
 
       Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) => Modelresponse(base64image: result)));
+              builder: (context) => Modelresponse(predicted: result)));
     } else {
       print('Error: ${response.statusCode}');
     }
   }
-  
+
   @override
   Widget build(BuildContext context) {
     Widget content;
