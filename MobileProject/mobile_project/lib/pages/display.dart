@@ -5,6 +5,8 @@ import 'dart:typed_data';
 import 'dart:io';
 import 'package:mobile_project/main.dart';
 import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:mobile_project/pages/modelresponse.dart';
 
 class Display extends StatelessWidget {
   final String? uploadImagePath;
@@ -16,11 +18,72 @@ class Display extends StatelessWidget {
     this.capturedImagePath,
   });
 
-  Future<void> sendToML(XFile images) async {
-    String path = images.path;
+  Future<void> sendToML(BuildContext context, XFile images) async {
+
+    showDialog(
+      context: context,
+      barrierDismissible:false, 
+      builder: (BuildContext context) {
+        return Dialog(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          elevation: 0,
+          child: Container(
+            width: 250, 
+            height: 150, 
+            padding: const EdgeInsets.all(16.0),
+            child: const Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                CircularProgressIndicator(),
+                SizedBox(height: 20),
+                Text(
+                  "Processing...",
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+
+    String base64Image = '';
+    List<int> imageBytes = await XFile(images.path).readAsBytes();
+    base64Image = base64Encode(imageBytes);
+
+    final url = Uri.parse(
+        'https://serverless.roboflow.com/infer/workflows/midnightmiracle/detect-count-and-visualize-2');
+
+    final headers = {
+      'Content-Type': 'application/json',
+    };
+
+    final body = jsonEncode({
+      'api_key': 'vZjkndB0RQFlzqhYsKp6',
+      'inputs': {
+        'image': {
+          'type': 'base64',
+          'value': base64Image, // Replace this with the actual image URL
+        },
+      },
+    });
+
+    final response = await http.post(url, headers: headers, body: body);
+
+    if (response.statusCode == 200) {
+      Navigator.pop(context);
+
+      final result = jsonDecode(response.body);
+
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => Modelresponse(base64image: result)));
+    } else {
+      print('Error: ${response.statusCode}');
+    }
   }
-
-
+  
   @override
   Widget build(BuildContext context) {
     Widget content;
@@ -86,7 +149,7 @@ class Display extends StatelessWidget {
                   }
 
                   if (image != null) {
-                    await sendToML(image);
+                    await sendToML(context, image);
                   }
                 },
                 backgroundColor: Colors.transparent,

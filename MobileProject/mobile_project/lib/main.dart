@@ -1,6 +1,8 @@
 // ignore_for_file: non_constant_identifier_names
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:mobile_project/pages/display.dart';
+import 'package:mobile_project/pages/modelresponse.dart';
 import 'firebase_options.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -99,8 +101,8 @@ class _PageState extends State<Page> {
           const Login(),
           const Uploadpic(),
           const Stat(),
-          const Stat(), // Stat
-          const Placeholder(), // Device
+          const Stat(),
+          const Placeholder(),
         ];
 
         const navItems = [
@@ -116,6 +118,7 @@ class _PageState extends State<Page> {
         ];
 
         return Scaffold(
+          extendBody: true,
           bottomNavigationBar: ClipRRect(
             borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
             child: NavigationBarTheme(
