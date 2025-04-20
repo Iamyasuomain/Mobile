@@ -23,7 +23,7 @@ class _ModelresponsState extends State<Modelresponse> {
     List<String> items = [];
 
     if (predicted != null) {
-      var predictions = predicted['output'][0]['predictions']['predictions'];
+      var predictions = predicted['outputs'][0]['predictions']['predictions'];
       // Check if 'predictions' is not null and not empty
       if (predictions != null && predictions.isNotEmpty) {
         for (var i = 0; i < predictions.length; i++) {
