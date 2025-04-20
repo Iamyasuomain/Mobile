@@ -1,18 +1,25 @@
-// ignore_for_file: non_constant_identifier_names
+// ignore_for_file: non_constant_identifier_names, unnecessary_null_comparison
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:mobile_project/pages/setting.dart';
 import 'firebase_options.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'pages/login.dart';
 import 'pages/register.dart';
 import 'pages/uploadpic.dart';
+import 'pages/stat.dart';
+import 'pages/home.dart';
+import '../services/Notiservices.dart';
+import 'package:mobile_project/pages/overall.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(MyApp());
+  NotificationService notificationService = NotificationService();
+  await notificationService.requestNotificationPermission();
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -27,7 +34,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
-PreferredSizeWidget AppBarCustom(String title) {
+PreferredSizeWidget AppBarCustom(BuildContext context, String title) {
   return PreferredSize(
     preferredSize: const Size.fromHeight(100.0),
     child: Container(
@@ -57,7 +64,14 @@ PreferredSizeWidget AppBarCustom(String title) {
                   color: Colors.white,
                   size: 25,
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const SettingsScreen(),
+                    ),
+                  );
+                },
               ),
             )
           ],
@@ -76,74 +90,66 @@ class Page extends StatefulWidget {
 
 class _PageState extends State<Page> {
   int _selectedIndex = 0;
+
   @override
   Widget build(BuildContext context) {
-return Scaffold(
-  bottomNavigationBar: ClipRRect(
-    borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-    child: NavigationBarTheme(
-      data: NavigationBarThemeData(
-        indicatorColor: const Color.fromARGB(255, 30, 55, 43),
-        backgroundColor: const Color(0xFF2F5241),
-        iconTheme: WidgetStateProperty.resolveWith<IconThemeData>(  //this just change icon color base on widget state 
-          (Set<WidgetState> states) {
-            if (states.contains(WidgetState.selected)) {
-              return const IconThemeData(color: Color(0xFFFFFFE2)); 
-            }
-            return const IconThemeData(color: Color(0xFFD6CFB9)); 
-          },
-        ),
-        labelTextStyle: WidgetStateProperty.resolveWith<TextStyle>(
-          (Set<WidgetState> states) {
-            if (states.contains(WidgetState.selected)) {
-              return const TextStyle(color: Color(0xFFFFFFE2), fontWeight: FontWeight.bold); 
-            }
-            return const TextStyle(color: Color(0xFFD6CFB9)); 
-          },
-        ),
-      ),
-      child: NavigationBar(
-        destinations: const [
+    return StreamBuilder<User?>(
+      stream: FirebaseAuth.instance.authStateChanges(),
+      builder: (context, snapshot) {
+        final user = snapshot.data;
+
+        if (user == null) {
+          return const Login();
+        }
+        var pages = [
+          HomePage(),
+          const Uploadpic(),
+          const Stat(), 
+          Overall(),
+          Placeholder(),
+        ];
+        pages = pages.where((page) => page != null).toList();
+        const navItems = [
+          NavigationDestination(icon: Icon(Icons.home), label: "Home"),
           NavigationDestination(
-            icon: Icon(Icons.home),
-            label: "Home",
-          ),
+              icon: Icon(Icons.photo_camera_outlined), label: "Photo"),
           NavigationDestination(
-            icon: Icon(Icons.photo_camera_outlined),
-            label: "Photo",
-          ),
+              icon: Icon(Icons.stacked_bar_chart), label: "Stat"),
           NavigationDestination(
-            icon: Icon(Icons.stacked_bar_chart),
-            label: "Stat",
-          ),
+              icon: Icon(Icons.summarize_outlined), label: "Overall"),
           NavigationDestination(
-            icon: Icon(Icons.phonelink_setup_outlined),
-            label: "Device",
+              icon: Icon(Icons.check_box_outlined), label: "Status"),
+        ];
+
+        return Scaffold(
+          bottomNavigationBar: ClipRRect(
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+            child: NavigationBarTheme(
+              data: NavigationBarThemeData(
+                indicatorColor: const Color.fromARGB(255, 30, 55, 43),
+                backgroundColor: const Color(0xFF2F5241),
+                iconTheme: WidgetStateProperty.all(
+                    const IconThemeData(color: Colors.white)),
+                labelTextStyle: WidgetStateProperty.all(
+                    const TextStyle(color: Colors.white)),
+              ),
+              child: NavigationBar(
+                destinations: navItems,
+                selectedIndex: _selectedIndex,
+                onDestinationSelected: (index) {
+                  setState(() {
+                    _selectedIndex = index;
+                  });
+                },
+              ),
+            ),
           ),
-          NavigationDestination(
-            icon: Icon(Icons.check_box_outlined),
-            label: "Status",
+          body: IndexedStack(
+            index: _selectedIndex,
+            children: pages,
           ),
-        ],
-        selectedIndex: _selectedIndex,
-        onDestinationSelected: (int index) {
-          setState(() {
-            _selectedIndex = index;
-          });
-        },
-      ),
-    ),
-  ),
-  body: IndexedStack(
-    index: _selectedIndex,
-    children: const [
-      Login(),
-      Register(),
-      Uploadpic(),
-      Placeholder(),
-      Placeholder(),
-    ],
-  ),
-);
+        );
+      },
+    );
   }
 }

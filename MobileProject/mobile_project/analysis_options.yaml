@@ -10,6 +10,7 @@
 analyzer:
   errors:
     duplicate_import: ignore
+    sort_child_properties_last: ignore
     unused_import: ignore
 include: package:flutter_lints/flutter.yaml
 
