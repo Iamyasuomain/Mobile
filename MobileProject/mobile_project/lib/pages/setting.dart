@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:mobile_project/pages/login.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -20,6 +21,42 @@ class _SettingsScreenState extends State<SettingsScreen> {
     super.initState();
     final user = FirebaseAuth.instance.currentUser;
     userEmail = user?.email;
+    _Notistatus();
+  }
+
+  Future<void> _Notistatus() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      final userRef =
+          FirebaseFirestore.instance.collection('fcmToken').doc(user.uid);
+
+      final userDoc = await userRef.get();
+
+      if (userDoc.exists) {
+        final userData = userDoc.data();
+        setState(() {
+          notificationStates = userData?['notificationsEnabled'] ??
+              true; 
+        });
+      } else {
+        await userRef.set({
+          'notificationsEnabled': true, 
+        }, SetOptions(merge: true));
+      }
+    }
+  }
+
+  Future<void> _updateNoti(bool value) async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      await FirebaseFirestore.instance.collection('fcmToken').doc(user.uid).set(
+        {
+          'notificationsEnabled': value,
+        },
+        SetOptions(merge: true),
+      );
+    }
+    print("Changed notistatus");
   }
 
   Future<void> logout(BuildContext context) async {
@@ -164,7 +201,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 const Text(
-                                  'Arai dee',
+                                  'Notifications settings',
                                   style: TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.w500,
@@ -174,6 +211,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                   value: notificationStates,
                                   onChanged: (value) {
                                     setState(() {
+                                      _updateNoti(value);
                                       notificationStates = value;
                                     });
                                   },
