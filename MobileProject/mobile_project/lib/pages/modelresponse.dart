@@ -74,10 +74,14 @@ class _ModelresponsState extends State<Modelresponse> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBarCustom("Response"),
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(200),
+        child: Nav(text:'Response'),
+      ),
       body: Center(
         child: getPredictedValue(widget.predicted), // Display the dialog content
       ),
     );
   }
 }
+

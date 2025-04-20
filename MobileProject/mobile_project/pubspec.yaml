@@ -46,7 +46,11 @@ dependencies:
   syncfusion_flutter_gauges: ^23.1.44
   firebase_database: ^11.3.5
   http: ^0.13.3
-
+  firebase_messaging: ^15.2.5
+  permission_handler: ^10.0.0
+  dotenv: ^4.2.0
+  flutter_dotenv: ^5.2.1
+  
 dev_dependencies:
   flutter_test:
     sdk: flutter

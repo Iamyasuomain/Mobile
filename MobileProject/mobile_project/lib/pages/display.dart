@@ -111,7 +111,7 @@ class Display extends StatelessWidget {
     return Scaffold(
       extendBodyBehindAppBar: true,
       extendBody: true,
-      appBar: AppBarCustom("Image"),
+      appBar: AppBarCustom(context,"Image"),
       body: Stack(
         children: [
           Positioned.fill(child: content),

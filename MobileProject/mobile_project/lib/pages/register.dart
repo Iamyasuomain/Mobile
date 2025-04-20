@@ -2,7 +2,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_project/main.dart';
-import 'package:mobile_project/models/user.dart';
 import 'package:mobile_project/pages/login.dart';
 
 class Register extends StatefulWidget {
@@ -21,7 +20,7 @@ class _RegisterState extends State<Register> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBarCustom("Register"),
+        appBar: AppBarCustom(context, "Register"),
         body: SingleChildScrollView(
           scrollDirection: Axis.vertical,
           child: Container(
@@ -203,10 +202,6 @@ class _RegisterState extends State<Register> {
                 ElevatedButton(
                     onPressed: () {
                       // ignore: unused_local_variable
-                      Users user = Users(
-                          username: usernameController.text,
-                          email: emailController.text,
-                          password: passwordController.text);
                       if (_formkey.currentState!.validate()) {
                         FirebaseAuth.instance
                             .createUserWithEmailAndPassword(

@@ -105,7 +105,7 @@ class _UploadpicState extends State<Uploadpic> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       extendBody: true,
-      appBar: AppBarCustom("Photo"),
+      appBar: AppBarCustom(context,"Photo"),
       body: _isCameraReady && _cameraController != null
           ? MediaQuery.removePadding(
               context: context,
