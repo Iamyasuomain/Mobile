@@ -1,30 +1,33 @@
 import 'dart:ffi';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'dart:typed_data';
 import 'dart:io';
 import 'package:mobile_project/main.dart';
+import 'package:http/http.dart' as http;
 
 class Display extends StatelessWidget {
-  final Uint8List? pickedImage;
+  final String? uploadImagePath;
   final String? capturedImagePath;
 
   const Display({
     super.key,
-    this.pickedImage,
+    this.uploadImagePath,
     this.capturedImagePath,
   });
 
-  Future<void> sendToML(Uint8List imageBytes) async {
-    print("Sending image to ML model... size: ${imageBytes.length}");
+  Future<void> sendToML(XFile images) async {
+    String path = images.path;
   }
+
 
   @override
   Widget build(BuildContext context) {
     Widget content;
 
-    if (pickedImage != null) {
-      content = Image.memory(
-        pickedImage!,
+    if (uploadImagePath != null) {
+      content = Image.file(
+        File(uploadImagePath!),
         fit: BoxFit.cover, // Makes the image full screen
         width: double.infinity, // Make the width fill the screen
         height: double.infinity, // Make the height fill the screen
@@ -68,25 +71,22 @@ class Display extends StatelessWidget {
           ),
 
           // Send image button in the bottom-right corner
-          if (pickedImage != null || capturedImagePath != null)
+          if (uploadImagePath != null || capturedImagePath != null)
             Positioned(
               bottom: 20,
               right: 20,
               child: FloatingActionButton(
                 onPressed: () async {
-                  Uint8List? bytes;
+                  XFile? image;
 
-                  if (pickedImage != null) {
-                    bytes = pickedImage;
+                  if (uploadImagePath != null) {
+                    image = XFile(uploadImagePath!);
                   } else if (capturedImagePath != null) {
-                    bytes = await File(capturedImagePath!).readAsBytes();
+                    image = XFile(capturedImagePath!);
                   }
 
-                  if (bytes != null) {
-                    await sendToML(bytes);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Image sent to ML model')),
-                    );
+                  if (image != null) {
+                    await sendToML(image);
                   }
                 },
                 backgroundColor: Colors.transparent,
@@ -103,4 +103,3 @@ class Display extends StatelessWidget {
     );
   }
 }
-

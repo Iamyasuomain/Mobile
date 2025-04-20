@@ -3,7 +3,6 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:typed_data';
 import 'dart:io';
 import 'package:camera/camera.dart';
-import '/services/upload.dart';
 import 'display.dart';
 import 'package:mobile_project/main.dart';
 
@@ -18,7 +17,7 @@ class _UploadpicState extends State<Uploadpic> {
   CameraController? _cameraController;
   bool _isCameraReady = false;
   XFile? _capturedImage;
-  Uint8List? _pickedImage;
+  XFile? _pickedImage;
   int camera = 0;
 
   @override
@@ -58,16 +57,16 @@ class _UploadpicState extends State<Uploadpic> {
       if (!_cameraController!.value.isInitialized ||
           _cameraController!.value.isTakingPicture) return;
 
-      final image = await _cameraController!.takePicture();
+      final captureimage = await _cameraController!.takePicture();
       setState(() {
-        _capturedImage = image;
+        _capturedImage = captureimage;
         _pickedImage = null;
       });
 
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => Display(capturedImagePath: image.path),
+          builder: (context) => Display(capturedImagePath: captureimage.path),
         ),
       );
     } catch (e) {
@@ -76,17 +75,18 @@ class _UploadpicState extends State<Uploadpic> {
   }
 
   void selectImage() async {
-    Uint8List? image = await pickImage(ImageSource.gallery);
-    if (image != null) {
+    final ImagePicker picker = ImagePicker();
+    XFile? uploadimage = await picker.pickImage(source: ImageSource.gallery);
+    if (uploadimage != null) {
       setState(() {
-        _pickedImage = image;
+        _pickedImage = uploadimage;
         _capturedImage = null;
       });
 
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => Display(pickedImage: image),
+          builder: (context) => Display(uploadImagePath: uploadimage.path),
         ),
       );
     } else {
