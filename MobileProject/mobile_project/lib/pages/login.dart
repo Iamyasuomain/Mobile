@@ -2,6 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_project/main.dart';
 import 'package:mobile_project/pages/register.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -15,10 +17,34 @@ class _LoginState extends State<Login> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final _formkey = GlobalKey<FormState>();
-  @override
+  Future<void> saveFCMToken() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      String? fcmToken = await FirebaseMessaging.instance.getToken();
+      if (fcmToken == null) {
+        await Future.delayed(const Duration(seconds: 5));
+        fcmToken = await FirebaseMessaging.instance.getToken();
+
+        if (fcmToken != null) {
+          FirebaseFirestore.instance.collection('fcmToken').doc(user.uid).set({
+            'fcmToken': fcmToken,
+          }, SetOptions(merge: true));
+          print("FCM Token saved: $fcmToken");
+        } else {
+          print("FCM Token is still null after retry.");
+        }
+      } else {
+        FirebaseFirestore.instance.collection('fcmToken').doc(user.uid).set({
+          'fcmToken': fcmToken,
+        }, SetOptions(merge: true));
+        print("FCM Token saved: $fcmToken");
+      }
+    }
+  }
+
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBarCustom("Login"),
+        appBar: AppBarCustom(context, "Login"),
         body: SingleChildScrollView(
           child: Center(
             child: ConstrainedBox(
@@ -61,8 +87,7 @@ class _LoginState extends State<Login> {
                                         controller: emailController,
                                         keyboardType: TextInputType.text,
                                         validator: (value) {
-                                          if (value == null ||
-                                              value.isEmpty) {
+                                          if (value == null || value.isEmpty) {
                                             return 'Please enter your email';
                                           } else if (!RegExp(
                                                   r'^[^@]+@[^@]+\.[^@]+$')
@@ -77,8 +102,7 @@ class _LoginState extends State<Login> {
                                           hintText: 'email@email.com',
                                           contentPadding:
                                               const EdgeInsets.symmetric(
-                                                  vertical: 10,
-                                                  horizontal: 20),
+                                                  vertical: 10, horizontal: 20),
                                           hintStyle: const TextStyle(
                                               color: Colors.grey),
                                           border: OutlineInputBorder(
@@ -98,14 +122,12 @@ class _LoginState extends State<Login> {
                                       ),
                                     ),
                                     Container(
-                                      padding:
-                                          const EdgeInsets.only(left: 20),
+                                      padding: const EdgeInsets.only(left: 20),
                                       child: TextFormField(
                                         controller: passwordController,
                                         keyboardType: TextInputType.text,
                                         validator: (value) {
-                                          if (value == null ||
-                                              value.isEmpty) {
+                                          if (value == null || value.isEmpty) {
                                             return 'Please enter your password';
                                           } else {
                                             return null;
@@ -118,8 +140,7 @@ class _LoginState extends State<Login> {
                                           hintText: 'password',
                                           contentPadding:
                                               const EdgeInsets.symmetric(
-                                                  vertical: 10,
-                                                  horizontal: 20),
+                                                  vertical: 10, horizontal: 20),
                                           hintStyle: const TextStyle(
                                               color: Colors.grey),
                                           border: OutlineInputBorder(
@@ -140,13 +161,14 @@ class _LoginState extends State<Login> {
                     height: 20,
                   ),
                   ElevatedButton(
-                      onPressed: () {
+                      onPressed: ()  {
                         if (_formkey.currentState!.validate()) {
                           FirebaseAuth.instance
                               .signInWithEmailAndPassword(
                                   email: emailController.text.trim(),
                                   password: passwordController.text.trim())
                               .then((value) {
+                                saveFCMToken();
                             Navigator.pushReplacement(context,
                                 MaterialPageRoute(builder: (context) {
                               return const MyApp();

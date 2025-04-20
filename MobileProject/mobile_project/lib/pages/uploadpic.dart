@@ -26,7 +26,7 @@ class _UploadpicState extends State<Uploadpic> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBarCustom("Upload"),
+        appBar: AppBarCustom(context,"Upload"),
         body: Center(
           child: _image != null
               ? Image.memory(_image!)

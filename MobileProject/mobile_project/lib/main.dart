@@ -1,6 +1,7 @@
 // ignore_for_file: non_constant_identifier_names
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:mobile_project/pages/setting.dart';
 import 'firebase_options.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -9,11 +10,14 @@ import 'pages/register.dart';
 import 'pages/uploadpic.dart';
 import 'pages/stat.dart';
 import 'pages/home.dart';
+import '../services/Notiservices.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  NotificationService notificationService = NotificationService();
+  await notificationService.requestNotificationPermission();
   runApp(const MyApp());
 }
 
@@ -29,7 +33,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
-PreferredSizeWidget AppBarCustom(String title) {
+PreferredSizeWidget AppBarCustom(BuildContext context, String title) {
   return PreferredSize(
     preferredSize: const Size.fromHeight(100.0),
     child: Container(
@@ -59,7 +63,14 @@ PreferredSizeWidget AppBarCustom(String title) {
                   color: Colors.white,
                   size: 25,
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const SettingsScreen(),
+                    ),
+                  );
+                },
               ),
             )
           ],
@@ -79,7 +90,7 @@ class Page extends StatefulWidget {
 class _PageState extends State<Page> {
   int _selectedIndex = 0;
 
-  @override 
+  @override
   Widget build(BuildContext context) {
     return StreamBuilder<User?>(
       stream: FirebaseAuth.instance.authStateChanges(),
@@ -87,25 +98,18 @@ class _PageState extends State<Page> {
         final user = snapshot.data;
 
         if (user == null) {
-          return IndexedStack(
-            index: _selectedIndex,
-            children: const [
-              Login(),
-              Register(),
-            ],
-          );
+          return const Login();
         }
         var pages = [
-          const Login(),
-          const Register(),
           const Uploadpic(),
           const Stat(), // Stat
-           HomePage(), // Device
+          HomePage(), // Device
+          SettingsScreen(),
+          Placeholder(),
         ];
-
+        pages = pages.where((page) => page != null).toList();
         const navItems = [
-          NavigationDestination(
-              icon: Icon(Icons.home), label: "Home"),
+          NavigationDestination(icon: Icon(Icons.home), label: "Home"),
           NavigationDestination(
               icon: Icon(Icons.photo_camera_outlined), label: "Photo"),
           NavigationDestination(

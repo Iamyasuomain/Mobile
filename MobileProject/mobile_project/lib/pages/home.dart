@@ -10,7 +10,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   bool isDeviceConnected = false;
-  User? user;
+  String? userEmail;
   int? lastUpdateTimestamp;
   late DatabaseReference _sensorRef;
   late Stream<DatabaseEvent> _sensorStream;
@@ -18,7 +18,8 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    user = FirebaseAuth.instance.currentUser;
+    final user = FirebaseAuth.instance.currentUser;
+    userEmail = user?.email;
     checkDeviceConnection();
     _sensorRef = FirebaseDatabase.instance.ref().child('ESP');
     _sensorStream = _sensorRef.onValue;
@@ -46,7 +47,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBarCustom('Home'),
+      appBar: AppBarCustom(context,'Home'),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -54,7 +55,7 @@ class _HomePageState extends State<HomePage> {
           children: [
             // Greeting Section
             Text(
-              'Hello, ${user?.displayName ?? user?.email ?? 'User'}!',
+              'Hello, ${userEmail ?? userEmail ?? 'User'}!',
               style: const TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 16),
