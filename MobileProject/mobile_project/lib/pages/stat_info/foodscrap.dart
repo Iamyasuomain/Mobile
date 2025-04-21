@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_project/main.dart';
 
-class FoodWastePage extends StatelessWidget {
-  const FoodWastePage({super.key});
+class FoodscrapPage extends StatelessWidget {
+  const FoodscrapPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(200),
-        child: Nav(text:"Food Scrab"),
+        preferredSize: const Size.fromHeight(100),
+        child: Nav(text: "Food Scrab"),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -27,11 +27,11 @@ class FoodWastePage extends StatelessWidget {
                   borderRadius: BorderRadius.circular(12),
                 ),
                 padding: const EdgeInsets.all(20),
-                child: Column(
+                child: const Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const [
+                  children: [
                     Text(
-                      'Food waste (50%)',
+                      'Food Scrap (30%)',
                       style: TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
@@ -40,14 +40,9 @@ class FoodWastePage extends StatelessWidget {
                     ),
                     SizedBox(height: 12),
                     Text(
-                      'Food waste is the disposal of food that is (or was) perfectly edible. '
-                      'Food waste comes in many guises. Some of the most shocking images and '
-                      'statistics on food waste are from commercial sources. Mountains of fruits '
-                      'and vegetables that are rejected from farms for being too small, too big, '
-                      'too wonky, too ugly or the wrong color. Dumpsters of food from stores that '
-                      'was mis-purchased, out-of-date or overstocked. But food waste happens at '
-                      'home too. Wasted leftovers, forgotten vegetables at the back of the fridge, '
-                      'out-of-date yogurts etc.',
+                      'Food scrap refers to the inedible parts of food that are discarded during preparation or consumption. '
+                      'These scraps are often unavoidable and include items such as fruit peels, vegetable skins, eggshells, '
+                      'and coffee grounds. While they are not typically consumed, food scraps can be composted to reduce waste.',
                       style: TextStyle(fontSize: 16),
                     ),
                   ],
@@ -66,65 +61,13 @@ class FoodWastePage extends StatelessWidget {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                   
                     ClipRRect(
                       borderRadius: BorderRadius.circular(12),
-                      child: Image.network(
-                        'https://images.unsplash.com/photo-1605518216938-7c31b7b14ad0?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8Zm9vZCUyMHdhc3RlfGVufDB8fDB8fA%3D%3D&w=1000&q=80',
+                      child: Image.asset(
+                        'images/foodscrap.jpeg',
                         width: 120,
                         height: 120,
                         fit: BoxFit.cover,
-                        loadingBuilder: (context, child, loadingProgress) {
-                          if (loadingProgress == null) return child;
-                          return Container(
-                            width: 120,
-                            height: 120,
-                            decoration: BoxDecoration(
-                              color: Colors.grey.shade300,
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: Center(
-                              child: CircularProgressIndicator(
-                                value:
-                                    loadingProgress.expectedTotalBytes != null
-                                        ? loadingProgress
-                                                .cumulativeBytesLoaded /
-                                            loadingProgress.expectedTotalBytes!
-                                        : null,
-                              ),
-                            ),
-                          );
-                        },
-                        errorBuilder: (context, error, stackTrace) {
-                          return Container(
-                            width: 120,
-                            height: 120,
-                            decoration: BoxDecoration(
-                              color: Colors.grey.shade300,
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: const Center(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    Icons.error_outline,
-                                    size: 30,
-                                    color: Colors.grey,
-                                  ),
-                                  SizedBox(height: 4),
-                                  Text(
-                                    'Image error',
-                                    style: TextStyle(
-                                      color: Colors.grey,
-                                      fontSize: 12,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          );
-                        },
                       ),
                     ),
 
@@ -138,11 +81,11 @@ class FoodWastePage extends StatelessWidget {
                           borderRadius: BorderRadius.circular(10),
                           color: const Color(0xFFFFF8EE),
                         ),
-                        child: Column(
+                        child: const Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
-                          children: const [
+                          children: [
                             Text(
-                              'Food waste',
+                              'Food Scrap',
                               style: TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
@@ -151,14 +94,21 @@ class FoodWastePage extends StatelessWidget {
                             ),
                             SizedBox(height: 4),
                             Text(
-                              '- Leftover meals',
+                              '- Fruit peels',
                               style: TextStyle(
                                 fontSize: 16,
                                 color: Color(0xFF263238),
                               ),
                             ),
                             Text(
-                              '- Expired but still edible food',
+                              '- Vegetable skins',
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: Color(0xFF263238),
+                              ),
+                            ),
+                            Text(
+                              '- Eggshells',
                               style: TextStyle(
                                 fontSize: 16,
                                 color: Color(0xFF263238),

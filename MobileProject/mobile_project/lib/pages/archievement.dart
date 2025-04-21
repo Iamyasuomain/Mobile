@@ -21,7 +21,7 @@ class Archievement extends StatelessWidget {
                 color: Color(0xFF8A8C89),
                 borderRadius: BorderRadius.circular(20),
               ),
-              child: Padding(
+              child: const Padding(
                 padding: EdgeInsets.all(15),
                 child: Column(
                   children: [
@@ -68,10 +68,20 @@ class Bar extends StatelessWidget {
       ),
       padding: EdgeInsets.all(18),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+// Align items at the top
         children: [
           Icon(icon),
           SizedBox(width: 10),
-          Text(text, style: TextStyle(fontSize: 16)),
+          Flexible(
+            child: Text(
+              text,
+              style: TextStyle(fontSize: 16),
+              softWrap: true, // Allow text to wrap
+              maxLines: 2, // Limit to 2 lines
+              overflow: TextOverflow.ellipsis, // Add ellipsis if text overflows
+            ),
+          ),
         ],
       ),
     );

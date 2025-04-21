@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mobile_project/main.dart';
-import 'package:mobile_project/pages/archievement.dart'; // Ensure this import is correct
+import 'package:mobile_project/pages/archievement.dart';
+import 'package:mobile_project/pages/stat_info/foodresidue.dart';
+import 'package:mobile_project/pages/stat_info/foodscrap.dart';
+import 'package:mobile_project/pages/stat_info/foodwaste.dart';
+import 'package:hexcolor/hexcolor.dart';
+import 'package:pie_chart/pie_chart.dart';
 
 void main() {
   runApp(const Status());
@@ -30,13 +35,34 @@ class StatPage extends StatefulWidget {
 }
 
 class _StatPageState extends State<StatPage> {
-  // Variables to store the food waste data
-  double foodWastePercentage = 0.5; // 50% for Food Waste
-  double foodScrapsPercentage = 0.35; // 35% for Food Scraps
-  double foodResiduesPercentage = 0.15; // 15% for Food Residues
+  double foodWastePercentage = 0.5;
+  double foodScrapsPercentage = 0.35;
+  double foodResiduesPercentage = 0.15;
 
-  // Method to update statistics (percentage)
-  void updateStatistics(double foodWaste, double foodScraps, double foodResidues) {
+  @override
+  void initState() {
+    super.initState();
+    fetchData().then((data) {
+      setState(() {
+        foodWastePercentage = data["Food Waste"] ?? 5;
+        foodScrapsPercentage = data["Food Scraps"] ?? 35;
+        foodResiduesPercentage = data["Food Residues"] ?? 15;
+      });
+    });
+  }
+
+  Future<Map<String, double>> fetchData() async {
+    Map<String, double> dataMap = {
+      "Food Waste": foodWastePercentage,
+      "Food Scraps": foodScrapsPercentage,
+      "Food Residues": foodResiduesPercentage,
+    };
+
+    return dataMap;
+  }
+
+  void updateStatistics(
+      double foodWaste, double foodScraps, double foodResidues) {
     setState(() {
       foodWastePercentage = foodWaste;
       foodScrapsPercentage = foodScraps;
@@ -51,107 +77,170 @@ class _StatPageState extends State<StatPage> {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          spacing: 20,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             const Text(
               'Food waste reduction',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 25),
             ),
-            const SizedBox(height: 20),
-            
-            // Pie Chart (simulated using a circular progress indicator)
             Center(
               child: Stack(
                 alignment: Alignment.center,
                 children: [
-                  CircularProgressIndicator(
-                    value: foodWastePercentage, // Dynamically set percentage
-                    strokeWidth: 20,  // Increased strokeWidth for a thicker ring
-                    valueColor: AlwaysStoppedAnimation<Color>(Colors.green),
-                  ),
-                  Text(
-                    'Food Waste ${(foodWastePercentage * 100).toStringAsFixed(0)}%',
-                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  FutureBuilder<Map<String, double>>(
+                    future: fetchData(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const CircularProgressIndicator();
+                      } else if (snapshot.hasError) {
+                        return const Text('Error loading data');
+                      } else if (snapshot.hasData) {
+                        return PieChart(
+                          dataMap: snapshot.data!,
+                          animationDuration: const Duration(milliseconds: 800),
+                          chartType: ChartType.ring,
+                          chartRadius: MediaQuery.of(context).size.width / 3.2,
+                          ringStrokeWidth: 28,
+                          initialAngleInDegree: 0,
+                          chartValuesOptions: const ChartValuesOptions(
+                            showChartValuesInPercentage: true,
+                          ),
+                        );
+                      } else {
+                        return const Text('No data available');
+                      }
+                    },
                   ),
                 ],
               ),
             ),
-            const SizedBox(height: 20),
-
-            // Data section with buttons
-            Card(
-              color: Colors.green[50],  // Lighter background color for the card
-              elevation: 5,
+            Container(
+              padding: const EdgeInsets.all(16),
+              width: double.infinity,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(16),
+                color: HexColor('#FBF6E9'),
+              ),
               child: Column(
+                spacing: 10,
                 children: [
-                  ListTile(
-                    title: const Text('Food Waste'),
-                    trailing: IconButton(
-                      icon: const Icon(Icons.arrow_forward),
-                      onPressed: () {
-                        updateStatistics(0.5, foodScrapsPercentage, foodResiduesPercentage); // Example update
-                      },
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: HexColor('#84B876'),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 15, horizontal: 20),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                    ),
+                    onPressed: () => {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const FoodwastePage(),
+                        ),
+                      ),
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text("Food Waste",
+                            style: TextStyle(
+                                fontSize: 16, color: HexColor('#2F5241'))),
+                        Icon(Icons.arrow_forward_ios,
+                            color: HexColor('#2F5241')),
+                      ],
                     ),
                   ),
-                  ListTile(
-                    title: const Text('Food Scraps'),
-                    trailing: IconButton(
-                      icon: const Icon(Icons.arrow_forward),
-                      onPressed: () {
-                        updateStatistics(foodWastePercentage, 0.35, foodResiduesPercentage); // Example update
-                      },
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: HexColor('#84B876'),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 15, horizontal: 20),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                    ),
+                    onPressed: () => {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const FoodresiduePage(),
+                        ),
+                      ),
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text("Food Residue",
+                            style: TextStyle(
+                                fontSize: 16, color: HexColor('#2F5241'))),
+                        Icon(Icons.arrow_forward_ios,
+                            color: HexColor('#2F5241')),
+                      ],
                     ),
                   ),
-                  ListTile(
-                    title: const Text('Food Residues'),
-                    trailing: IconButton(
-                      icon: const Icon(Icons.arrow_forward),
-                      onPressed: () {
-                        updateStatistics(foodWastePercentage, foodScrapsPercentage, 0.15); // Example update
-                      },
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: HexColor('#84B876'),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 15, horizontal: 20),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                    ),
+                    onPressed: () => {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const FoodscrapPage(),
+                        ),
+                      ),
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text("Food Scrap",
+                            style: TextStyle(
+                                fontSize: 16, color: HexColor('#2F5241'))),
+                        Icon(Icons.arrow_forward_ios,
+                            color: HexColor('#2F5241')),
+                      ],
                     ),
                   ),
                 ],
               ),
             ),
-            const SizedBox(height: 20),
-
-            // Achievement section
-            Center(
+            FittedBox(
+              // Adjust the width as needed
               child: ElevatedButton(
-                onPressed: () {},
-                style: ElevatedButton.styleFrom(// Set the background color
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const Archievement(),
+                    ),
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: HexColor('#8A8C89'),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30), // Rounded corners
+                    borderRadius: BorderRadius.circular(25),
                   ),
                 ),
                 child: Row(
-                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment:
+                      MainAxisAlignment.center, // Center-align content
                   children: [
-                    FloatingActionButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => Archievement(),
-                          ),
-                        );
-                      },
-                      backgroundColor: const Color(0x8A8C89),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: const [
-                          Icon(
-                            FontAwesomeIcons.trophy,
-                            color: Colors.white,
-                          ),
-                          SizedBox(width: 8),
-                          Text(
-                            'Achievements',
-                            style: TextStyle(color: Colors.white, fontSize: 14),
-                          ),
-                        ],
-                      ),
+                    Icon(FontAwesomeIcons.trophy,
+                        color: HexColor('#FFFF79')), // Trophy icon
+                    const SizedBox(width: 10),
+                    Text(
+                      "Achievements",
+                      style: TextStyle(color: HexColor('#FFFF79')),
                     ),
                   ],
                 ),

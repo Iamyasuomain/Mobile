@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_project/main.dart';
+import 'package:hexcolor/hexcolor.dart';
+import 'package:mobile_project/pages/home.dart';
 
 class Modelresponse extends StatefulWidget {
   final Map<String, dynamic>? predicted;
@@ -28,42 +30,94 @@ class _ModelresponsState extends State<Modelresponse> {
       if (predictions != null && predictions.isNotEmpty) {
         for (var i = 0; i < predictions.length; i++) {
           var detect_class = predictions[i]['class'];
-          items.add(detect_class);  // Add the detected class to the items list
+          items.add(detect_class); // Add the detected class to the items list
         }
       }
     }
 
     // Show predictions if available, else show a message
     if (items.isNotEmpty) {
-      return Dialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        elevation: 0,
-        child: Container(
-          width: 250,
-          height: 150,
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Text(""),
-              const SizedBox(height: 10),
-              Text(items.join(", ")), // Join items into a string for display
-            ],
+      if (items.contains('Bone')) {
+        return Dialog(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          elevation: 0,
+          child: Container(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.cancel,
+                  color: HexColor("#FF0000"),
+                  size: 50,
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  "The model detect Bone so you can't put it in the machine",
+                  style: TextStyle(
+                    color: HexColor('#FF0000'),
+                    fontSize: 30,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ) // Join items into a string for display
+              ],
+            ),
           ),
-        ),
-      );
+        );
+      } else {
+        return Dialog(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          elevation: 0,
+          child: Container(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.check_circle_rounded,
+                  color: HexColor("#4FA64F"),
+                  size: 50,
+                ),
+                SizedBox(height: 10),
+                Text(
+                  "The model detect " +
+                      items.join(", ") +
+                      " so you can put it in the machine",
+                  style: TextStyle(
+                    color: HexColor('#4FA64F'),
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ) // Join items into a string for display
+              ],
+            ),
+          ),
+        );
+      }
     } else {
       return Dialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         elevation: 0,
         child: Container(
-          width: 250,
-          height: 150,
           padding: const EdgeInsets.all(16.0),
-          child: const Column(
+          child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text("The Model can't detect your food waste please try again"),
+              Icon(
+                Icons.cancel,
+                color: HexColor("#FF0000"),
+                size: 50,
+              ),
+              Text(
+                "The Model can't detect your food waste please try again",
+                style: TextStyle(
+                  color: HexColor('#FF0000'),
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              )
             ],
           ),
         ),
@@ -75,13 +129,31 @@ class _ModelresponsState extends State<Modelresponse> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(200),
-        child: Nav(text:'Response'),
+        preferredSize: const Size.fromHeight(100),
+        child: Nav(text: 'Response'),
       ),
-      body: Center(
-        child: getPredictedValue(widget.predicted), // Display the dialog content
-      ),
+      body: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            getPredictedValue(widget.predicted),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+              child: FloatingActionButton(
+                onPressed: () {
+                  Navigator.pop(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => HomePage(),
+                      ));
+                },
+                child:
+                    Text("Home", style: TextStyle(color: HexColor("#2F5241"))),
+                backgroundColor: HexColor("#84B876"),
+              ),
+            ), // Back button
+          ] // Display the dialog content
+          ),
     );
   }
 }
-

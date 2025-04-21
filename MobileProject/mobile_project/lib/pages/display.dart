@@ -20,18 +20,17 @@ class Display extends StatelessWidget {
   });
 
   Future<void> sendToML(BuildContext context, XFile images) async {
-
     showDialog(
       context: context,
-      barrierDismissible:false, 
+      barrierDismissible: false,
       builder: (BuildContext context) {
         return Dialog(
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
           elevation: 0,
           child: Container(
-            width: 250, 
-            height: 150, 
+            width: 250,
+            height: 150,
             padding: const EdgeInsets.all(16.0),
             child: const Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -72,9 +71,8 @@ class Display extends StatelessWidget {
     final response = await http.post(url, headers: headers, body: body);
 
     if (response.statusCode == 200) {
-
       Navigator.pop(context);
-      
+
       final result = jsonDecode(response.body);
 
       Navigator.push(
@@ -111,12 +109,12 @@ class Display extends StatelessWidget {
     return Scaffold(
       extendBodyBehindAppBar: true,
       extendBody: true,
-      appBar: AppBarCustom(context,"Image"),
+      appBar: AppBarCustom(context, "Image"),
       body: Stack(
         children: [
           Positioned.fill(child: content),
           Positioned(
-            top: 125,
+            top: 125,   
             left: 20,
             child: FloatingActionButton(
               onPressed: () {

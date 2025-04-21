@@ -105,7 +105,10 @@ class _UploadpicState extends State<Uploadpic> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       extendBody: true,
-      appBar: AppBarCustom(context,"Photo"),
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(100),
+        child: Nav(text: "Take a picture"),
+      ),
       body: _isCameraReady && _cameraController != null
           ? MediaQuery.removePadding(
               context: context,

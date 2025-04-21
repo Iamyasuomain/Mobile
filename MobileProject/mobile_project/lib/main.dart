@@ -161,50 +161,42 @@ class _PageState extends State<Page> {
 
 class Nav extends StatelessWidget {
   final String text;
-  const Nav({
-    super.key,
-    required this.text});
+  const Nav({super.key, required this.text});
+
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.only(top: 0, left: 16, right: 16, bottom: 16),
       decoration: const BoxDecoration(
-        borderRadius: BorderRadius.only(
-          bottomLeft: Radius.circular(20),
-          bottomRight: Radius.circular(20),
+        color: Color(0xFF2F5241), // Same color as AppBarCustom
+        borderRadius: BorderRadius.vertical(
+          bottom: Radius.circular(20), // Matches AppBarCustom's borderRadius
         ),
-        color: Color(0xFF2D5543),
       ),
-
       child: Container(
-        padding: const EdgeInsets.only(
-          top: 50,
-          left: 16,
-          right: 16,
-          bottom: 16,
-        ),
-        decoration: const BoxDecoration(
-          color: Color(0xFF2D5543),
-          borderRadius: BorderRadius.only(
-            bottomLeft: Radius.circular(20),
-            bottomRight: Radius.circular(20),
-          ),
-        ),
+        height: 150,
+        margin: const EdgeInsets.only(top: 50),
+        padding: const EdgeInsets.symmetric(horizontal: 16), // Add horizontal padding
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween, // Space between arrow and text
+          crossAxisAlignment: CrossAxisAlignment.center, // Center-align vertically
           children: [
             IconButton(
               onPressed: () => {Navigator.pop(context)},
-              icon: Icon(Icons.arrow_back_ios, color: Colors.white),
+              icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
             ),
-            SizedBox(width: 8),
-            Text(
-              text,
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 30,
-                fontWeight: FontWeight.w500,
+            Expanded(
+              child: Center(
+                child: Text(
+                  text,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 30,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
             ),
+            const SizedBox(width: 48), // Placeholder for symmetry with the arrow
           ],
         ),
       ),
