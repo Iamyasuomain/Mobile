@@ -1,6 +1,9 @@
 // ignore_for_file: non_constant_identifier_names, unnecessary_null_comparison
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:mobile_project/pages/archievement.dart';
+import 'package:mobile_project/pages/display.dart';
+import 'package:mobile_project/pages/modelresponse.dart';
 import 'package:mobile_project/pages/setting.dart';
 import 'firebase_options.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -8,6 +11,9 @@ import 'package:flutter/material.dart';
 import 'pages/login.dart';
 import 'pages/register.dart';
 import 'pages/uploadpic.dart';
+import 'pages/status.dart';
+import 'pages/home.dart';
+import '../services/Notiservices.dart';
 import 'pages/stat.dart';
 import 'pages/home.dart';
 import '../services/Notiservices.dart';
@@ -103,10 +109,10 @@ class _PageState extends State<Page> {
         }
         var pages = [
           HomePage(),
-          const Uploadpic(),
-          const Stat(), 
-          Overall(),
-          Placeholder(),
+          Uploadpic(), // Stat
+          Status(), // Device
+          Stat(),
+          Overall(), // Overall
         ];
         pages = pages.where((page) => page != null).toList();
         const navItems = [
@@ -122,6 +128,7 @@ class _PageState extends State<Page> {
         ];
 
         return Scaffold(
+          extendBody: true,
           bottomNavigationBar: ClipRRect(
             borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
             child: NavigationBarTheme(
@@ -150,6 +157,51 @@ class _PageState extends State<Page> {
           ),
         );
       },
+    );
+  }
+}
+
+class Nav extends StatelessWidget {
+  final String text;
+  const Nav({super.key, required this.text});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: const BoxDecoration(
+        color: Color(0xFF2F5241), // Same color as AppBarCustom
+        borderRadius: BorderRadius.vertical(
+          bottom: Radius.circular(20), // Matches AppBarCustom's borderRadius
+        ),
+      ),
+      child: Container(
+        height: 150,
+        margin: const EdgeInsets.only(top: 50),
+        padding: const EdgeInsets.symmetric(horizontal: 16), // Add horizontal padding
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween, // Space between arrow and text
+          crossAxisAlignment: CrossAxisAlignment.center, // Center-align vertically
+          children: [
+            IconButton(
+              onPressed: () => {Navigator.pop(context)},
+              icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
+            ),
+            Expanded(
+              child: Center(
+                child: Text(
+                  text,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 30,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(width: 48), // Placeholder for symmetry with the arrow
+          ],
+        ),
+      ),
     );
   }
 }

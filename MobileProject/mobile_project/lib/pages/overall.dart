@@ -48,13 +48,13 @@ class _OverallState extends State<Overall> {
 
   void _updateCondition() {
     overallCondition = _temperature < 18 || _humidity < 40
-        ? "แย่"
+        ? "bad"
         : _temperature > 30 || _humidity > 60
-            ? "ดี"
-            : "พอใช้";
-    conditionColor = overallCondition == "ดี"
+            ? "good"
+            : "acceptable";
+    conditionColor = overallCondition == "good"
         ? Colors.green
-        : overallCondition == "พอใช้"
+        : overallCondition == "acceptable"
             ? Colors.yellow
             : Colors.red;
   }
@@ -67,7 +67,7 @@ class _OverallState extends State<Overall> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBarCustom(context, 'สถานะอุปกรณ์'),
+      appBar: AppBarCustom(context, 'Machine status'),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -93,7 +93,7 @@ class _OverallState extends State<Overall> {
           .doc(user.uid)
           .snapshots(),
       builder: (context, snapshot) {
-        String displayText = "ยังไม่มีการแจ้งเตือน";
+        String displayText = "No notification";
         if (snapshot.hasData && snapshot.data!.exists) {
           final data = snapshot.data!.data() as Map<String, dynamic>;
           final timestamp = data['timestamp'];
@@ -118,7 +118,7 @@ class _OverallState extends State<Overall> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const Text(
-                        'การแจ้งเตือนล่าสุด',
+                        'Notification',
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
@@ -160,9 +160,9 @@ class _OverallState extends State<Overall> {
                 borderRadius: BorderRadius.circular(30),
               ),
               child: Icon(
-                overallCondition == "ดี"
+                overallCondition == "good"
                     ? Icons.check_circle
-                    : overallCondition == "พอใช้"
+                    : overallCondition == "acceptable"
                         ? Icons.warning
                         : Icons.error,
                 color: conditionColor,
@@ -175,7 +175,7 @@ class _OverallState extends State<Overall> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'สถานะปัจจุบัน',
+                    'Status',
                     style: TextStyle(fontSize: 14, color: Colors.grey[600]),
                   ),
                   const SizedBox(height: 4),
@@ -213,7 +213,7 @@ class _OverallState extends State<Overall> {
                       const Icon(Icons.thermostat, color: Colors.redAccent),
                       const SizedBox(width: 8),
                       const Text(
-                        'อุณหภูมิ',
+                        'Temperature',
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
@@ -253,7 +253,7 @@ class _OverallState extends State<Overall> {
                       const Icon(Icons.water_drop, color: Colors.blueAccent),
                       const SizedBox(width: 8),
                       const Text(
-                        'ความชื้น',
+                        'Humidity',
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w500,

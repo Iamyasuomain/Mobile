@@ -150,7 +150,7 @@ class _StatState extends State<Stat> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBarCustom(context,'Status'),
+      appBar: AppBarCustom(context,'Monitering'),
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
         child: Column(
