@@ -67,7 +67,7 @@ class _OverallState extends State<Overall> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBarCustom(context, 'สถานะอุปกรณ์'),
+      appBar: AppBarCustom(context, 'Overall'),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(

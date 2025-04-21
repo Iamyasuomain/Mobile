@@ -11,7 +11,6 @@ class Register extends StatefulWidget {
 }
 
 class _RegisterState extends State<Register> {
-  final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController confirmController = TextEditingController();
@@ -70,41 +69,6 @@ class _RegisterState extends State<Register> {
                                     filled: true,
                                     fillColor: const Color(0xFFFFEEC2),
                                     hintText: 'email@email.com',
-                                    contentPadding: const EdgeInsets.symmetric(
-                                        vertical: 10, horizontal: 20),
-                                    hintStyle:
-                                        const TextStyle(color: Colors.grey),
-                                    border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(23),
-                                        borderSide: BorderSide.none),
-                                  ),
-                                ),
-                              ),
-                              Container(
-                                padding: const EdgeInsets.only(bottom: 20),
-                                alignment: Alignment.centerLeft,
-                                child: const Text(
-                                  'Username',
-                                  style: TextStyle(fontSize: 22),
-                                ),
-                              ),
-                              Container(
-                                padding:
-                                    const EdgeInsets.only(left: 20, bottom: 20),
-                                child: TextFormField(
-                                  controller: usernameController,
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return "Please enter your username";
-                                    } else {
-                                      return null;
-                                    }
-                                  },
-                                  keyboardType: TextInputType.text,
-                                  decoration: InputDecoration(
-                                    filled: true,
-                                    fillColor: const Color(0xFFFFEEC2),
-                                    hintText: 'username',
                                     contentPadding: const EdgeInsets.symmetric(
                                         vertical: 10, horizontal: 20),
                                     hintStyle:

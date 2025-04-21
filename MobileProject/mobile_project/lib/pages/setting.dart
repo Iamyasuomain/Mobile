@@ -35,12 +35,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
       if (userDoc.exists) {
         final userData = userDoc.data();
         setState(() {
-          notificationStates = userData?['notificationsEnabled'] ??
-              true; 
+          notificationStates = userData?['notificationsEnabled'] ?? true;
         });
       } else {
         await userRef.set({
-          'notificationsEnabled': true, 
+          'notificationsEnabled': true,
         }, SetOptions(merge: true));
       }
     }
@@ -60,6 +59,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   Future<void> logout(BuildContext context) async {
+    final user = FirebaseAuth.instance.currentUser;
+
+    if (user != null) {
+      final userRef =
+          FirebaseFirestore.instance.collection('fcmToken').doc(user.uid);
+
+      await userRef.set(
+        {
+          'fcmToken': '',
+        },
+        SetOptions(merge: true),
+      );
+    }
     await FirebaseAuth.instance.signOut();
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Logged out successfully')),

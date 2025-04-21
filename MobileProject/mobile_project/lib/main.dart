@@ -104,9 +104,9 @@ class _PageState extends State<Page> {
         var pages = [
           HomePage(),
           const Uploadpic(),
-          const Stat(), 
+          const Placeholder(), 
           Overall(),
-          Placeholder(),
+          const Stat(),
         ];
         pages = pages.where((page) => page != null).toList();
         const navItems = [
